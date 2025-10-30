@@ -9,7 +9,7 @@
 3. **Repository Settings**:
 
    - **Repository name**: `xss_scanner`
-   - **Description**: `Comprehensive XSS Vulnerability Scanner - Detects Reflected, Stored, and DOM-based XSS vulnerabilities`
+   - **Description**: `Simple XSS Vulnerability Scanner - Detects Reflected XSS vulnerabilities`
    - **Visibility**: Choose Public or Private as needed
    - **Initialize**: ⚠️ **DO NOT** check "Add a README file" (we already have one)
    - **Add .gitignore**: Leave unchecked (we already have one)
@@ -38,38 +38,25 @@ After pushing, your repository should be available at:
 
 ✅ **Core Scanner Files:**
 
-- `enhanced_xss_scanner.py` - Full-featured scanner
-- `simple_xss_scanner.py` - Lightweight scanner
-- `xss_scanner.py` - Original implementation
+- `simple_xss_scanner.py` - Lightweight XSS scanner
 
-✅ **Utility Modules:**
+✅ **Configuration:**
 
-- `payloads.py` - 500+ XSS payloads
-- `discovery.py` - URL/endpoint discovery
-- `subdomain_enum.py` - Subdomain enumeration
-- `reporting.py` - Multi-format reporting
-
-✅ **Setup & Configuration:**
-
-- `setup.py` & `setup.bat` - Installation scripts
-- `config.py` - Configuration settings
 - `requirements.txt` - Python dependencies
 
 ✅ **Documentation:**
 
 - `README.md` - Comprehensive documentation
-- `PROJECT_SUMMARY.md` - Project overview
+- `GITHUB_SETUP.md` - Setup instructions
 - `LICENSE` - MIT License with security notice
 
-✅ **Examples & Testing:**
+✅ **Reports:**
 
-- `examples.py` - Usage examples
-- `test_scanner.py` - Test suite
-- `scan.bat` - Windows batch file
+- `test_report.json` - Sample test report
 
-✅ **Git Configuration:**
+✅ **Utility:**
 
-- `.gitignore` - Git ignore patterns
+- `command.txt` - Sample command
 
 ## 🔐 Authentication Note
 
@@ -99,10 +86,9 @@ Your XSS Scanner project will be live at:
 
 ### Features Showcased:
 
-- ⚡ Multi-type XSS detection
-- 🌐 Advanced discovery systems
-- 💥 500+ XSS payloads
-- 📊 Professional reporting
+- ⚡ Reflected XSS detection
+- 🌐 Simple URL discovery
+- � JSON reporting
 - 🛡️ Responsible security testing
 - 🎓 Educational documentation
 

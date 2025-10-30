@@ -1,52 +1,35 @@
 # XSS Vulnerability Scanner
 
-A comprehensive XSS (Cross-Site Scripting) vulnerability scanner that detects Reflected, Stored, and DOM-based XSS vulnerabilities across multiple endpoints and subdomains. This tool is designed for security professionals, penetration testers, and developers to identify XSS vulnerabilities in web applications.
+A simple XSS (Cross-Site Scripting) vulnerability scanner that detects Reflected and Stored XSS vulnerabilities. This lightweight tool is designed for security professionals, penetration testers, and developers to identify XSS vulnerabilities in web applications.
 
 ## 🚀 Features
 
-### Multi-Type XSS Detection
+### XSS Detection
 
-- **Reflected XSS**: Detects XSS in URL parameters and form inputs
-- **Stored XSS**: Identifies persistent XSS in user-generated content
-- **DOM-based XSS**: Uses browser automation to find client-side XSS
+- **Reflected XSS**: Detects XSS in URL parameters and form inputs that are immediately reflected
+- **Stored XSS**: Identifies persistent XSS in forms where user input is stored and displayed later
+- **Lightweight**: No heavy dependencies like Selenium
+- **Fast Scanning**: Multi-threaded testing for speed
 
-### Advanced Discovery
+### Testing Capabilities
 
-- **Intelligent Crawling**: Discovers endpoints through link analysis and common paths
-- **Subdomain Enumeration**: DNS brute force and certificate transparency lookup
+- **XSS Payloads**: Essential payload database with unique identifiers for tracking
 - **Form Analysis**: Automatically detects and tests web forms
-- **Sitemap Parsing**: Extracts URLs from sitemap.xml and robots.txt
+- **URL Discovery**: Simple link extraction and testing
+- **Payload Verification**: Revisits pages to verify if stored payloads persist
 
-### Comprehensive Testing
-
-- **500+ XSS Payloads**: Extensive payload database with bypass techniques
-- **Context-Aware Testing**: Different payloads for different injection contexts
-- **WAF Bypass Techniques**: Advanced evasion methods
-- **Custom Payload Support**: Load your own payload files
-
-### Performance & Reliability
+### Performance
 
 - **Concurrent Testing**: Multi-threaded scanning for speed
-- **Rate Limiting**: Configurable delays to avoid overwhelming servers
+- **Configurable Threads**: Adjust scanning speed
 - **Error Handling**: Robust error handling and recovery
-- **Progress Tracking**: Real-time progress indicators
 
-### Rich Reporting
+### Reporting
 
-- **Multiple Formats**: JSON, HTML, CSV, and XML reports
-- **Detailed Analysis**: Vulnerability categorization and risk scoring
-- **Visual Reports**: Professional HTML reports with charts and graphs
-- **Export Options**: Easy integration with other security tools
+- **JSON Reports**: Export results in JSON format
+- **Console Output**: Real-time vulnerability detection feedback
 
 ## 📦 Installation
-
-### Quick Setup (Windows)
-
-```cmd
-git clone <repository-url>
-cd mini_project
-setup.bat
-```
 
 ### Manual Installation
 
@@ -57,16 +40,12 @@ cd mini_project
 
 # Install Python dependencies
 pip install -r requirements.txt
-
-# Run setup script
-python setup.py
 ```
 
 ### Requirements
 
 - Python 3.7+
-- Google Chrome (for DOM-based XSS testing)
-- Internet connection for subdomain enumeration
+- Internet connection
 
 ## 🎯 Usage
 
@@ -74,153 +53,101 @@ python setup.py
 
 ```bash
 # Basic scan
-python enhanced_xss_scanner.py -u https://example.com
-
-# Simple scan (lightweight, no heavy dependencies)
 python simple_xss_scanner.py -u https://example.com
-```
 
-### Windows Batch Files
+# Scan with custom threads
+python simple_xss_scanner.py -u https://example.com --threads 10
 
-```cmd
-# Setup
-setup.bat
-
-# Quick scan
-scan.bat https://example.com
-
-# Advanced scan
-scan.bat https://example.com --subdomains --aggressive --output report --format html
-```
-
-### Advanced Usage Examples
-
-#### Comprehensive Scan with Subdomains
-
-```bash
-python enhanced_xss_scanner.py -u https://example.com \
-    --subdomains \
-    --depth 3 \
-    --threads 10 \
-    --output comprehensive_scan \
-    --format html
-```
-
-#### Aggressive Testing with Custom Payloads
-
-```bash
-python enhanced_xss_scanner.py -u https://example.com \
-    --aggressive \
-    --payloads payloads/custom_payloads.txt \
-    --timeout 15 \
-    --output aggressive_scan \
-    --format json
-```
-
-#### API Testing
-
-```bash
-python enhanced_xss_scanner.py -u https://api.example.com \
-    --user-agent "CustomAPITester/1.0" \
-    --threads 5 \
-    --output api_scan \
-    --format csv
+# Save results to file
+python simple_xss_scanner.py -u https://example.com --output results.json
 ```
 
 ## 🔧 Configuration
 
 ### Command Line Options
 
-| Option         | Description                       | Default          |
-| -------------- | --------------------------------- | ---------------- |
-| `-u, --url`    | Target URL (required)             | -                |
-| `-d, --depth`  | Crawling depth                    | 2                |
-| `--subdomains` | Enable subdomain enumeration      | False            |
-| `--threads`    | Number of concurrent threads      | 5                |
-| `--timeout`    | Request timeout in seconds        | 10               |
-| `--user-agent` | Custom User-Agent string          | Chrome/120.0.0.0 |
-| `--output`     | Output file basename              | -                |
-| `--format`     | Report format (json/html/csv/xml) | json             |
-| `--payloads`   | Custom payload file               | Built-in         |
-| `--aggressive` | Enable aggressive testing         | False            |
-| `--verbose`    | Enable verbose output             | False            |
-
-### Custom Payloads
-
-Create a text file with one payload per line:
-
-```
-<script>alert('Custom XSS')</script>
-<img src=x onerror=alert('Custom')>
-<svg onload=alert('Custom')>
-```
+| Option      | Description                  | Default |
+| ----------- | ---------------------------- | ------- |
+| `-u, --url` | Target URL (required)        | -       |
+| `--threads` | Number of concurrent threads | 5       |
+| `--timeout` | Request timeout in seconds   | 10      |
+| `--output`  | Output JSON file             | -       |
 
 ## 📊 Sample Output
 
 ### Console Output
 
 ```
-🚀 Starting XSS scan for https://example.com
-[INFO] Discovering subdomains for example.com
-[FOUND] Subdomain: www.example.com
-[FOUND] Subdomain: api.example.com
-[INFO] Found 3 subdomains
-[INFO] Discovering endpoints for www.example.com
-[INFO] Found 25 endpoints for www.example.com
-[INFO] Found 45 endpoints to test
-[INFO] Testing for XSS vulnerabilities...
-Testing URLs: 100%|██████████| 45/45 [00:30<00:00,  1.50it/s]
-[VULN] Reflected XSS found at: https://example.com/search?q=<payload>
-[VULN] Stored XSS found at: https://example.com/comments
-[COMPLETE] Scan completed in 32.45 seconds
-[RESULT] Found 2 XSS vulnerabilities
+Starting XSS scan for https://example.com
+Scanning for Reflected and Stored XSS vulnerabilities...
 
-=== SCAN SUMMARY ===
-Target: https://example.com
-URLs tested: 45
-Subdomains found: 3
-Total vulnerabilities: 2
+[1/3] Discovering URLs...
+Found 5 URLs to test
 
-Vulnerability breakdown:
-  Reflected XSS: 1
-  Stored XSS: 1
+[2/3] Testing for Reflected XSS and submitting Stored XSS payloads...
+[VULN] Reflected XSS found: q in https://example.com/search
+
+[3/3] Verifying Stored XSS (3 candidates)...
+[VULN] Stored XSS found! Submitted at https://example.com/comment, appears at https://example.com/
+
+==================================================
+Scan completed in 18.45 seconds
+Found 2 vulnerabilities
+  - Reflected XSS: 1
+  - Stored XSS: 1
+==================================================
 ```
 
-### HTML Report Sample
+### JSON Report Sample
 
-The HTML report includes:
-
-- Executive summary with statistics
-- Vulnerability details with evidence
-- Risk assessment and recommendations
-- Technical details for remediation
+```json
+{
+  "scan_info": {
+    "target": "https://example.com",
+    "urls_tested": 5,
+    "stored_xss_candidates": 3,
+    "vulnerabilities_found": 2
+  },
+  "vulnerabilities": [
+    {
+      "type": "Reflected XSS",
+      "url": "https://example.com/search?q=...",
+      "parameter": "q",
+      "payload": "<script>alert('XSS')</script>",
+      "method": "GET"
+    },
+    {
+      "type": "Stored XSS",
+      "submission_url": "https://example.com/comment",
+      "display_url": "https://example.com/",
+      "payload": "<script>alert('XSS-a1b2c3d4')</script>",
+      "method": "POST",
+      "fields": ["comment", "name"]
+    }
+  ]
+}
+```
 
 ## 🛠️ Architecture
 
 ### Core Components
 
-- `enhanced_xss_scanner.py` - Main scanner with full features
-- `simple_xss_scanner.py` - Lightweight scanner for basic testing
-- `payloads.py` - XSS payload management
-- `discovery.py` - URL and endpoint discovery
-- `subdomain_enum.py` - Subdomain enumeration
-- `reporting.py` - Report generation and analysis
-- `config.py` - Configuration and constants
+- `simple_xss_scanner.py` - Lightweight scanner for XSS testing
 
 ### Flow Diagram
 
 ```
 Target URL Input
     ↓
-Subdomain Discovery (optional)
-    ↓
-Endpoint Crawling & Discovery
+URL Discovery
     ↓
 Form Detection & Analysis
     ↓
-XSS Payload Testing
+Reflected XSS Testing (immediate response)
     ↓
-Vulnerability Analysis
+Stored XSS Payload Submission
+    ↓
+Stored XSS Verification (revisit pages)
     ↓
 Report Generation
 ```
@@ -251,18 +178,21 @@ The scanner includes built-in delays and respects server resources:
 - Occurs when user input is immediately reflected in the response
 - Common in search boxes, error messages, and form validation
 - Example: `https://example.com/search?q=<script>alert('XSS')</script>`
+- The scanner tests GET parameters and form inputs for immediate reflection
 
-#### Stored XSS
+#### Stored XSS (Persistent XSS)
 
-- User input is stored and later displayed to other users
-- Found in comments, user profiles, and message boards
-- More dangerous as it affects multiple users
+- User input is stored on the server and later displayed to users
+- Found in comments, user profiles, message boards, and review sections
+- More dangerous as it can affect multiple users over time
+- The scanner submits payloads with unique identifiers and revisits pages to verify persistence
 
-#### DOM-based XSS
+### How Stored XSS Detection Works
 
-- Occurs entirely in the browser's DOM
-- JavaScript reads from unsafe sources (URL fragments, etc.)
-- Requires browser automation to detect effectively
+1. **Identification**: Scanner identifies forms with fields likely to store data (comment, message, review, etc.)
+2. **Submission**: Unique payloads are submitted to these forms
+3. **Verification**: Scanner revisits the same page and related pages to check if the payload persists
+4. **Detection**: If the unique payload appears on a subsequent visit, Stored XSS is confirmed
 
 ### Common Vulnerable Parameters
 
@@ -270,65 +200,21 @@ The scanner includes built-in delays and respects server resources:
 - User data: `name`, `email`, `comment`, `message`
 - Navigation: `url`, `redirect`, `return`, `callback`
 - Identifiers: `id`, `user`, `page`, `category`
+- Content fields: `description`, `review`, `feedback`, `note`, `body`, `post`
 
 ## 🔧 Troubleshooting
 
 ### Common Issues
 
-#### Chrome Driver Issues
-
-```bash
-# Update Chrome driver automatically
-python -c "from webdriver_manager.chrome import ChromeDriverManager; ChromeDriverManager().install()"
-```
-
-#### SSL Certificate Errors
-
-```bash
-# Add --ignore-ssl-errors flag for testing environments
-python enhanced_xss_scanner.py -u https://example.com --user-agent "Mozilla/5.0..."
-```
-
 #### Permission Errors
 
 - Ensure you have permission to test the target
 - Check if the website blocks automated requests
-- Try using different User-Agent strings
 
 ### Performance Optimization
 
 - Reduce thread count for slower servers: `--threads 3`
 - Increase timeout for slow responses: `--timeout 20`
-- Use simple scanner for basic testing: `simple_xss_scanner.py`
-
-## 📚 Advanced Features
-
-### Custom User Agents
-
-```bash
-# Mobile testing
---user-agent "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X)"
-
-# API testing
---user-agent "CustomAPITester/1.0"
-```
-
-### Integration with CI/CD
-
-```yaml
-# Example GitHub Actions workflow
-- name: Run XSS Scan
-  run: |
-    python enhanced_xss_scanner.py -u ${{ env.TARGET_URL }} \
-      --output scan_results \
-      --format json
-
-- name: Upload Results
-  uses: actions/upload-artifact@v2
-  with:
-    name: xss-scan-results
-    path: scan_results.json
-```
 
 ## 🤝 Contributing
 
@@ -336,7 +222,6 @@ We welcome contributions! Areas for improvement:
 
 - Additional payload techniques
 - New discovery methods
-- Enhanced reporting features
 - Performance optimizations
 - Documentation improvements
 

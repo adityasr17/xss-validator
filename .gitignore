@@ -132,12 +132,9 @@ dmypy.json
 reports/
 logs/
 test_reports/
-test_payloads/
 test_logs/
-test_config.json
 *_report.*
 *.log
-chromedriver*
 
 # IDE
 .vscode/

@@ -1,2 +1,4 @@
-python simple_xss_scanner.py -u http://www.rnsit.ac.in --output test_report.json
+python xss_scanner.py --help
+
+python xss_scanner.py -u http://www.rnsit.ac.in --output test_report.json
 
