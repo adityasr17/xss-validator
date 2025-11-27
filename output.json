@@ -1,0 +1,108 @@
+{
+  "scan_info": {
+    "target": "http://google.com",
+    "start_time": "2025-11-28T01:16:02.502299",
+    "end_time": "2025-11-28T01:16:28.374019",
+    "duration_seconds": 25.87172,
+    "urls_tested": 8,
+    "stored_xss_candidates_count": 6,
+    "vulnerabilities_found": 0
+  },
+  "stored_xss_candidates": [
+    {
+      "url": "http://google.com",
+      "form_url": "http://google.com/search",
+      "payload": "<script>alert('XSS-24c40a4f')</script>",
+      "unique_id": "24c40a4f",
+      "fields": {
+        "gbv": "<script>alert('XSS-24c40a4f')</script>",
+        "q": "<script>alert('XSS-24c40a4f')</script>",
+        "btnG": "<script>alert('XSS-24c40a4f')</script>",
+        "biw": "<script>alert('XSS-24c40a4f')</script>",
+        "hl": "<script>alert('XSS-24c40a4f')</script>",
+        "iflsig": "<script>alert('XSS-24c40a4f')</script>",
+        "source": "<script>alert('XSS-24c40a4f')</script>",
+        "bih": "<script>alert('XSS-24c40a4f')</script>",
+        "btnI": "<script>alert('XSS-24c40a4f')</script>"
+      },
+      "redirect_url": "http://google.com/search"
+    },
+    {
+      "url": "http://google.com",
+      "form_url": "http://google.com/search",
+      "payload": "<img src=x onerror=alert('XSS-24c40a4f')>",
+      "unique_id": "24c40a4f",
+      "fields": {
+        "gbv": "<img src=x onerror=alert('XSS-24c40a4f')>",
+        "q": "<img src=x onerror=alert('XSS-24c40a4f')>",
+        "btnG": "<img src=x onerror=alert('XSS-24c40a4f')>",
+        "biw": "<img src=x onerror=alert('XSS-24c40a4f')>",
+        "hl": "<img src=x onerror=alert('XSS-24c40a4f')>",
+        "iflsig": "<img src=x onerror=alert('XSS-24c40a4f')>",
+        "source": "<img src=x onerror=alert('XSS-24c40a4f')>",
+        "bih": "<img src=x onerror=alert('XSS-24c40a4f')>",
+        "btnI": "<img src=x onerror=alert('XSS-24c40a4f')>"
+      },
+      "redirect_url": "http://google.com/search"
+    },
+    {
+      "url": "http://google.com/search",
+      "form_url": "http://google.com/index",
+      "payload": "<script>alert('XSS-0fe36090')</script>",
+      "unique_id": "0fe36090",
+      "fields": {
+        "continue": "<script>alert('XSS-0fe36090')</script>",
+        "q": "<script>alert('XSS-0fe36090')</script>"
+      },
+      "redirect_url": "http://google.com/index"
+    },
+    {
+      "url": "http://google.com/search",
+      "form_url": "http://google.com/index",
+      "payload": "<img src=x onerror=alert('XSS-0fe36090')>",
+      "unique_id": "0fe36090",
+      "fields": {
+        "continue": "<img src=x onerror=alert('XSS-0fe36090')>",
+        "q": "<img src=x onerror=alert('XSS-0fe36090')>"
+      },
+      "redirect_url": "http://google.com/index"
+    },
+    {
+      "url": "http://google.com/advanced_search?hl=en-IN&amp;authuser=0",
+      "form_url": "http://google.com/search",
+      "payload": "<script>alert('XSS-ac71b21e')</script>",
+      "unique_id": "ac71b21e",
+      "fields": {
+        "as_epq": "<script>alert('XSS-ac71b21e')</script>",
+        "as_nhi": "<script>alert('XSS-ac71b21e')</script>",
+        "as_sitesearch": "<script>alert('XSS-ac71b21e')</script>",
+        "as_q": "<script>alert('XSS-ac71b21e')</script>",
+        "as_eq": "<script>alert('XSS-ac71b21e')</script>",
+        "as_oq": "<script>alert('XSS-ac71b21e')</script>",
+        "as_nlo": "<script>alert('XSS-ac71b21e')</script>",
+        "hl": "<script>alert('XSS-ac71b21e')</script>",
+        "tbs": "<script>alert('XSS-ac71b21e')</script>"
+      },
+      "redirect_url": "http://google.com/search"
+    },
+    {
+      "url": "http://google.com/advanced_search?hl=en-IN&amp;authuser=0",
+      "form_url": "http://google.com/search",
+      "payload": "<img src=x onerror=alert('XSS-ac71b21e')>",
+      "unique_id": "ac71b21e",
+      "fields": {
+        "as_epq": "<img src=x onerror=alert('XSS-ac71b21e')>",
+        "as_nhi": "<img src=x onerror=alert('XSS-ac71b21e')>",
+        "as_sitesearch": "<img src=x onerror=alert('XSS-ac71b21e')>",
+        "as_q": "<img src=x onerror=alert('XSS-ac71b21e')>",
+        "as_eq": "<img src=x onerror=alert('XSS-ac71b21e')>",
+        "as_oq": "<img src=x onerror=alert('XSS-ac71b21e')>",
+        "as_nlo": "<img src=x onerror=alert('XSS-ac71b21e')>",
+        "hl": "<img src=x onerror=alert('XSS-ac71b21e')>",
+        "tbs": "<img src=x onerror=alert('XSS-ac71b21e')>"
+      },
+      "redirect_url": "http://google.com/search"
+    }
+  ],
+  "vulnerabilities": []
+}

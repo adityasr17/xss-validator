@@ -18,14 +18,16 @@ import uuid
 class SimpleXSSScanner:
     """Lightweight XSS scanner for Reflected and Stored XSS detection"""
     
-    def __init__(self, target_url, timeout=10, threads=5):
+    def __init__(self, target_url, timeout=10, threads=5, store_delay=3):
         self.target_url = target_url.rstrip('/')
         self.timeout = timeout
         self.threads = threads
+        self.store_delay = store_delay
         self.session = requests.Session()
         self.session.timeout = timeout
         self.vulnerabilities = []
         self.stored_xss_candidates = []  # Track potential stored XSS locations
+        self.discovered_urls = set()     # Track all discovered URLs
         
         # User agent
         self.session.headers.update({
@@ -49,6 +51,7 @@ class SimpleXSSScanner:
     def discover_urls(self, base_url):
         """Simple URL discovery"""
         urls = set([base_url])
+        self.discovered_urls.add(base_url)
         
         try:
             response = self.session.get(base_url)
@@ -64,6 +67,7 @@ class SimpleXSSScanner:
                     # Only same domain
                     if parsed.netloc == urllib.parse.urlparse(base_url).netloc:
                         urls.add(absolute_url)
+                        self.discovered_urls.add(absolute_url)
         except Exception:
             pass
         
@@ -176,13 +180,9 @@ class SimpleXSSScanner:
                         
                         form_data = {}
                         for field_name in all_fields:
-                            # Put payload in fields that might store data
-                            if any(keyword in field_name.lower() for keyword in 
-                                   ['comment', 'message', 'text', 'content', 'description', 
-                                    'review', 'feedback', 'note', 'body', 'post', 'reply']):
-                                form_data[field_name] = payload
-                            else:
-                                form_data[field_name] = f"test_{unique_id}"
+                            # Try to inject into all fields, prioritizing likely candidates but not excluding others
+                            # We'll use the payload for everything to be thorough
+                            form_data[field_name] = payload
                         
                         try:
                             # Submit the form with payload
@@ -208,50 +208,44 @@ class SimpleXSSScanner:
         return None
     
     def verify_stored_xss(self):
-        """Verify stored XSS by revisiting pages"""
+        """Verify stored XSS by revisiting all discovered pages (Optimized)"""
         print("Verifying stored XSS candidates...")
         
+        # Add any redirect URLs to discovered URLs just in case
         for candidate in self.stored_xss_candidates:
+            self.discovered_urls.add(candidate['redirect_url'])
+            
+        print(f"Checking {len(self.stored_xss_candidates)} payloads across {len(self.discovered_urls)} pages...")
+        
+        # Optimization: Fetch each page ONCE and check for ALL payloads
+        for check_url in self.discovered_urls:
             try:
-                # Wait a moment to ensure data is stored
-                time.sleep(1)
+                response = self.session.get(check_url)
+                page_content = response.text
                 
-                # Check multiple locations where the payload might appear
-                urls_to_check = [
-                    candidate['url'],
-                    candidate['form_url'],
-                    candidate['redirect_url']
-                ]
-                
-                for check_url in set(urls_to_check):
-                    try:
-                        response = self.session.get(check_url)
+                # Check all candidates against this single page response
+                for candidate in self.stored_xss_candidates:
+                    if candidate['payload'] in page_content:
+                        vuln = {
+                            'type': 'Stored XSS',
+                            'url': check_url,  # Required for reporting
+                            'parameter': list(candidate['fields'].keys()), # Required for reporting
+                            'submission_url': candidate['form_url'],
+                            'display_url': check_url,
+                            'payload': candidate['payload'],
+                            'method': 'POST',
+                            'fields': list(candidate['fields'].keys())
+                        }
                         
-                        # Check if our unique payload appears in the response
-                        if candidate['payload'] in response.text:
-                            vuln = {
-                                'type': 'Stored XSS',
-                                'submission_url': candidate['form_url'],
-                                'display_url': check_url,
-                                'payload': candidate['payload'],
-                                'method': 'POST',
-                                'fields': list(candidate['fields'].keys())
-                            }
+                        # Check if not already reported
+                        if not any(v.get('payload') == candidate['payload'] and 
+                                  v.get('type') == 'Stored XSS' 
+                                  for v in self.vulnerabilities):
+                            self.vulnerabilities.append(vuln)
+                            print(f"[VULN] Stored XSS found! Submitted at {candidate['form_url']}, appears at {check_url}")
                             
-                            # Check if not already reported
-                            if not any(v.get('payload') == candidate['payload'] and 
-                                      v.get('type') == 'Stored XSS' 
-                                      for v in self.vulnerabilities):
-                                self.vulnerabilities.append(vuln)
-                                print(f"[VULN] Stored XSS found! Submitted at {candidate['form_url']}, appears at {check_url}")
-                                break
-                                
-                    except Exception:
-                        continue
-                        
             except Exception:
-                continue
-    
+                continue    
     def test_url(self, url):
         """Test a single URL"""
         vulnerabilities = []
@@ -299,6 +293,9 @@ class SimpleXSSScanner:
         # Verify stored XSS
         print(f"\n[3/3] Verifying Stored XSS ({len(self.stored_xss_candidates)} candidates)...")
         if self.stored_xss_candidates:
+            if getattr(self, 'store_delay', 0) > 0:
+                print(f"Waiting {self.store_delay} seconds for stored payloads to propagate...")
+                time.sleep(self.store_delay)
             self.verify_stored_xss()
         
         end_time = datetime.now()
@@ -312,9 +309,10 @@ class SimpleXSSScanner:
                 'end_time': end_time.isoformat(),
                 'duration_seconds': duration,
                 'urls_tested': len(urls),
-                'stored_xss_candidates': len(self.stored_xss_candidates),
+                'stored_xss_candidates_count': len(self.stored_xss_candidates),
                 'vulnerabilities_found': len(self.vulnerabilities)
             },
+            'stored_xss_candidates': self.stored_xss_candidates,
             'vulnerabilities': self.vulnerabilities
         }
         
@@ -340,6 +338,7 @@ def main():
     parser.add_argument('--timeout', type=int, default=10, help='Request timeout in seconds')
     parser.add_argument('--threads', type=int, default=5, help='Number of concurrent threads')
     parser.add_argument('--output', help='Output file path (JSON format)')
+    parser.add_argument('--store-delay', type=int, default=3, help='Seconds to wait before verifying stored XSS (allows propagation/moderation)')
     
     args = parser.parse_args()
     
@@ -348,7 +347,7 @@ def main():
         return
     
     try:
-        scanner = SimpleXSSScanner(args.url, args.timeout, args.threads)
+        scanner = SimpleXSSScanner(args.url, args.timeout, args.threads, store_delay=args.store_delay)
         report = scanner.scan()
         
         if args.output:
