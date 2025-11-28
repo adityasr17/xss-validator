@@ -3,3 +3,7 @@ python xss_scanner.py --help
 python xss_scanner.py -u http://google.com --output output.json   
 
 python xss_scanner.py -u http://testphp.vulnweb.com/ --output output.json
+
+python app.py
+http://testphp.vulnweb.com/
+http://google.com
